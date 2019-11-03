@@ -1,5 +1,3 @@
-Forked from https://github.com/Wintervorst/iitc/raw/master/plugins/totalrecon/
-
 ## If you want to have a map of your submitted portals and potential portals on multiple devices and share it with other players. This script makes that possible.
 
 <img src="https://gitlab.com/AlfonsoML/wayfarer/raw/master/assets/markersonthemap.png"></img><br/>
@@ -91,6 +89,8 @@ You can toggle several layers on and off in the layer menu.<br/>
 To refresh the markerset you can use the "Update candidate data" link in the dialog.
 
 ## Differences from the original TotalRecon
+This plugin started as a fork from https://github.com/Wintervorst/iitc/raw/master/plugins/totalrecon/  
+
 I suggested to provide patches to the original version in order to fix some issues and improvements, but the offer was declined and told to create my own fork, so here it is.  
 1. Removed some unused code from previous plugins and fix errors like one that happened when a layer is enabled/disabled.  
 2. Don't use highlighters, instead provide a dialog with an option to enable the addition of new markers.  
@@ -98,7 +98,7 @@ I suggested to provide patches to the original version in order to fix some issu
 4. Add options to track also Edit requests.
 5. Allow to remove candidates from the map.  
 6. Layout improvements to the edit dialog.
+7. Anything that comes after renaming it to "Wayfarer planner." https://gitlab.com/AlfonsoML/wayfarer/commits/master
 
 ## Integration with Wayfarer
-There's an additional Tampermonkey plugin: <a href='https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js?inline=false'>Wayfarer Exporter</a> that parses your nominations when you load https://wayfarer.nianticlabs.com/nominations and automatically adds them to your data.  
-When you load it the first time it will ask you for the script url, use the same one that you have configured in IITC and after a few seconds reload IITC to check that your nominations are there.
+You can use an additional plugin for TamperMonkey to automatically manage your data using the nominations tracked in Wayfarer: [https://gitlab.com/AlfonsoML/wayfarer/blob/master/exporter.md](Wayfarer Exporter)
