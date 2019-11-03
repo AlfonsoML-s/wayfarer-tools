@@ -10,7 +10,7 @@ Forked from https://github.com/Wintervorst/iitc/raw/master/plugins/totalrecon/
 
 ## It's easy to use, but it requires a bit of configuration if you want to create your own google sheet. However, when you've completed the setup, it is a matter of installing the userscript and you are good to go.
 
-## A. If you want to make use of an existing sheet. Install the <a href="https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js">userscript</a>, load IITC and enter the scripturl.<br/>
+## A. If you want to make use of an existing sheet. Install the <a href="https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js?inline=false">userscript</a>, load IITC and enter the scripturl.<br/>
 <img src="https://gitlab.com/AlfonsoML/wayfarer/raw/master/assets/enterscripturl.png"></img><br/>
 ## You can test it out with this script url
 Test script url: https://script.google.com/macros/s/AKfycbyBx4dR0s8v1ZEsnuKFARfmibHiqTY20qO0EU3vRML4y4XW6wmu/exec Keep in mind that this a shared sheet, after checking that the plugin works as expected you must use your own sheet instead of this one.
@@ -100,5 +100,5 @@ I suggested to provide patches to the original version in order to fix some issu
 6. Layout improvements to the edit dialog.
 
 ## Integration with Wayfarer
-There's an additional Tampermonkey plugin: <a href='https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js'>Wayfarer Exporter</a> that parses your nominations when you load https://wayfarer.nianticlabs.com/nominations and automatically adds them to your data.  
+There's an additional Tampermonkey plugin: <a href='https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js?inline=false'>Wayfarer Exporter</a> that parses your nominations when you load https://wayfarer.nianticlabs.com/nominations and automatically adds them to your data.  
 When you load it the first time it will ask you for the script url, use the same one that you have configured in IITC and after a few seconds reload IITC to check that your nominations are there.
