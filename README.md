@@ -101,4 +101,5 @@ I suggested to provide patches to the original version in order to fix some issu
 7. Anything that comes after renaming it to "Wayfarer planner." https://gitlab.com/AlfonsoML/wayfarer/commits/master
 
 ## Integration with Wayfarer
-You can use an additional plugin for TamperMonkey to automatically manage your data using the nominations tracked in Wayfarer: [https://gitlab.com/AlfonsoML/wayfarer/blob/master/exporter.md](Wayfarer Exporter)
+You can use an additional plugin for TamperMonkey to automatically manage your data using the nominations tracked in Wayfarer:
+Read how to use it: [Wayfarer Exporter](https://gitlab.com/AlfonsoML/wayfarer/blob/master/exporter.md)
