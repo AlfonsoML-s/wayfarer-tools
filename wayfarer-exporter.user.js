@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.3
+// @version      0.4
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js
@@ -78,22 +78,30 @@ function init() {
 	//	console.log(nomination);
 		const id = nomination.id;
 		// if we're already tracking it...
-		if (currentCandidates[id]) {
+		const existingCandidate = currentCandidates[id];
+		if (existingCandidate) {
 			if (nomination.status == 'ACCEPTED') {
 				// Ok, we don't have to track it any longer.
 				deleteCandidate(nomination);
+				delete currentCandidates[id];
+				return true
 			}
 			if (nomination.status == 'REJECTED') {
-				rejectCandidate(nomination);
+				rejectCandidate(nomination, existingCandidate);
+				delete currentCandidates[id];
+				return true
 			}
 			if (nomination.status == 'DUPLICATE') {
-				rejectCandidate(nomination);
+				rejectCandidate(nomination, existingCandidate);
+				delete currentCandidates[id];
+				return true
 			}
 			if (nomination.status == 'WITHDRAWN') {
-				rejectCandidate(nomination);
+				rejectCandidate(nomination, existingCandidate);
+				delete currentCandidates[id];
+				return true
 			}
-			delete currentCandidates[id];
-			return true
+			return false;
 		} 
 
 		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING') {
@@ -105,7 +113,8 @@ function init() {
 			const cell17id = cell17.toString()
 			Object.keys(currentCandidates).forEach(idx => {
 				const candidate = currentCandidates[idx];
-				if (candidate.title == nomination.title && candidate.cell17id == cell17id) {
+				// if it finds a candidate in the same level 17 cell and less than 20 meters away, handle it as the nomination for this
+				if (candidate.cell17id == cell17id && getDistance(candidate, nomination) < 20) {
 					// if we find such candidate, remove it because we're gonna add now the new one with a new id
 					console.log('Found manual candidate for ' + candidate.title);
 					deleteCandidate({id: idx});
@@ -114,15 +123,30 @@ function init() {
 
 			addCandidate(nomination);
 			currentCandidates[nomination.id] = {
+				cell17id: S2.S2Cell.FromLatLng(nomination, 17).toString(),
+				title: nomination.title,
 				lat: nomination.lat,
 				lng: nomination.lng,
-				title: nomination.title
+				status: 'submitted'
 			};
 			return true;
 		}
 		return false;
 	}
 
+	// https://stackoverflow.com/a/1502821/250294
+	function getDistance(p1, p2) {
+		const rad = function(x) {
+			return x * Math.PI / 180;
+		};
+
+		const R = 6378137; // Earth’s mean radius in meter
+		const dLat = rad(p2.lat - p1.lat);
+		const dLong = rad(p2.lng - p1.lng);
+		const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		return d = R * c; // returns the distance in meter	
+	}
 
 	function addCandidate(nomination) {
 		console.log('Tracking new nomination', nomination);
@@ -134,7 +158,10 @@ function init() {
 		updateStatus(nomination, 'delete'); 
 	}
 
-	function rejectCandidate(nomination) {
+	function rejectCandidate(nomination, existingCandidate) {
+		if (existingCandidate.status == 'rejected')
+			return;
+
 		console.log('Rejected nomination', nomination);
 		updateStatus(nomination, 'rejected'); 
 	}
@@ -228,10 +255,12 @@ function init() {
 
 				const candidates = {};
 				submitted.forEach( c => {
-					const cell17 = S2.S2Cell.FromLatLng(c, 17);
 					candidates[c.id] = {
-						cell17id: cell17.toString(),
-						title: c.title
+						cell17id: S2.S2Cell.FromLatLng(c, 17).toString(),
+						title: c.title,
+						lat: c.lat,
+						lng: c.lng,
+						status: c.status
 					};
 				})
 				localStorage['wayfarerexporter-url'] = url;
