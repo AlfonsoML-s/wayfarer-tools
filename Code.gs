@@ -1,4 +1,4 @@
-// Version 1
+// Version 2
 
 var sheetName = 'Total Recon'
 var scriptProperties = PropertiesService.getScriptProperties()
@@ -105,16 +105,7 @@ function doPost(e) {
         return ContentService
         .createTextOutput(JSON.stringify({ 'result': 'deleted' }))
         .setMimeType(ContentService.MimeType.JSON);        
-      }
-
-      if (newStatus && newStatus != 'undefined') {
-        sheet.getRange(nextRow, 7).setValue(newStatus);
-
-        return ContentService
-        .createTextOutput(JSON.stringify({ 'result': 'updated' }))
-        .setMimeType(ContentService.MimeType.JSON);       
-      }
-      
+      }     
     }
         
     // Auto add intel link
