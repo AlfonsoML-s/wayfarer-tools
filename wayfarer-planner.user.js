@@ -333,6 +333,7 @@
 		if (imageUrl !== '' && imageUrl !== undefined) {
 			formContent += ' <a href="' + imageUrl + '" style="padding:4px; float:right;" target="_blank">Image</a>';
 		}
+		formContent += ` <a href="https://www.google.com/maps?layer=c&cbll=${lat},${lng}" style="padding:4px; float:right;" target="_blank">Street View</a>`;
 
 		formpopup.setContent(formContent + '</div>');
 		formpopup.openOn(map);
