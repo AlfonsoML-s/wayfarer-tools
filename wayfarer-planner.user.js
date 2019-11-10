@@ -177,7 +177,8 @@
 						iconAnchor: [100,5],
 						iconSize: [200,10],
 						html: title
-					})
+					}),
+					data: candidate
 				});
 				const existingMarker = plottedmarkers[candidate.id];
 				existingMarker.layer.addLayer(titleMarker);
