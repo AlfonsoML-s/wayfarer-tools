@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.8
+// @version      1.8.1
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -66,7 +66,7 @@
 
 	const defaultSettings = {
 		showTitles: true,
-		showRadius: true,
+		showRadius: false,
 		scriptURL: ''
 	}
 	let settings = defaultSettings;
@@ -242,7 +242,7 @@
 	};
 
 	function clearAllLayers() {
-		Object.values(mapLayers).forEach(data => data.layer.clearLayers);
+		Object.values(mapLayers).forEach(data => data.layer.clearLayers());
 
 		/* clear marker storage */
 		plottedmarkers = {};
