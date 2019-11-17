@@ -59,6 +59,9 @@ function init() {
 		const sentCandidates = nominationController.nomList;
 		getAllCandidates()
 			.then(function(candidates) {
+				if (!candidates)
+					return;
+
 				currentCandidates = candidates;
 				let modifiedCandidates = false;
 				sentCandidates.forEach(nomination => {
@@ -243,6 +246,10 @@ function init() {
 			if (!url)
 				return null;
 		}
+		if (!url.startsWith('https://script.google.com/macros/')) {
+			alert('The url of the script seems to be wrong, please paste the URL provided after "creating the webapp"');
+			return null;
+		}
 		const fetchOptions = {
 			method: 'GET'
 		};
@@ -272,6 +279,7 @@ function init() {
 			.catch(function(e) {
 				console.log(e); // eslint-disable-line no-console
 				alert(e);
+				return null;
 			});
 	}
 
