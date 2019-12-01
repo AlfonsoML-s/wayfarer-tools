@@ -6,7 +6,7 @@
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
-// @description  Place markers on the map for possible candidates, submitted candidates, rejected candidates and succesful candidates.
+// @description  Place markers on the map for your candidates in Wayfarer.
 // @match        https://intel.ingress.com/*
 // @grant none
 // ==/UserScript==
