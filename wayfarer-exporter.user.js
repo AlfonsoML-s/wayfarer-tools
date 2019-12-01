@@ -57,6 +57,9 @@ function init() {
 		}
 
 		const sentCandidates = nominationController.nomList;
+		if (!sentCandidates) {
+			return;
+		}
 		getAllCandidates()
 			.then(function(candidates) {
 				if (!candidates)
@@ -148,7 +151,7 @@ function init() {
 		const dLong = rad(p2.lng - p1.lng);
 		const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
 		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		return d = R * c; // returns the distance in meter	
+		return R * c; // returns the distance in meter	
 	}
 
 	function addCandidate(nomination) {
@@ -200,14 +203,15 @@ function init() {
 	}
 
 	function addConfigurationButton() {
+		addCss();
+
 		const link = document.createElement('a');
 		link.className = 'sidebar-item sidebar-wayfarerexporter';
 		link.title = 'Configure Exporter';
-		link.style.paddingLeft = '27px';
 		link.innerHTML = '<span class="glyphicon glyphicon-share"></span> Exporter';
 		const ref = document.querySelector('.sidebar-nominations');
 
-		ref.parentNode.appendChild(link);
+		ref.parentNode.insertBefore(link, ref.nextSibling);
 
 		link.addEventListener('click', function(e) {
 			e.preventDefault();
@@ -220,6 +224,27 @@ function init() {
 			loadPlannerData(url)
 				.then(analyzeCandidates);
 		});
+	}
+
+	function addCss() {
+		const css = `
+			span.glyphicon.glyphicon-share {
+				margin-right: 13px;
+			}
+
+			a.sidebar-item.sidebar-wayfarerexporter {
+				padding-left: 27px;
+			}
+
+			a.sidebar-item.sidebar-wayfarerexporter:hover {
+				padding-left: 22px;
+				text-decoration: none;
+			}
+			`;
+		const style = document.createElement('style');
+		style.type = 'text/css';
+		style.innerHTML = css;
+		document.querySelector('head').appendChild(style);
 	}
 
 	function getAllCandidates() {
