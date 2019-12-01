@@ -18,6 +18,22 @@ function init() {
 
 	let nominationController;
 
+
+	// queue of updates to send
+	const pendingUpdates = [];
+	// keep track of how many request are being sent at the moment
+	let sendingUpdates = 0;
+	// limit to avoid errors with Google
+	const maxSendingUpdates = 8;
+	// counters for the log
+	let totalUpdates = 0;
+	let sentUpdates = 0;
+
+	// logger containers
+	let updateLog;
+	let logger;
+	let msgLog;
+
 	const initWatcher = setInterval(() => {
 		if (tryNumber === 0) {
 			clearInterval(initWatcher);
@@ -56,8 +72,9 @@ function init() {
 			return;
 		}
 
-		const sentCandidates = nominationController.nomList;
-		if (!sentCandidates) {
+		const sentNominations = nominationController.nomList;
+		if (!sentNominations) {
+			logMessage('Failed to parse nominations from Wayfarer');
 			return;
 		}
 		getAllCandidates()
@@ -66,13 +83,18 @@ function init() {
 					return;
 
 				currentCandidates = candidates;
+				logMessage(`Analyzing ${sentNominations.length} nominations.`);
 				let modifiedCandidates = false;
-				sentCandidates.forEach(nomination => {
+				sentNominations.slice(0, 10).forEach(nomination => {
 					if (checkNomination(nomination))
 						modifiedCandidates = true;
 				});
 				if (modifiedCandidates) {
 					localStorage['wayfarerexporter-candidates'] = JSON.stringify(currentCandidates);
+				} else {
+					logMessage('No modifications detected on the nominations.');
+					logMessage('Closing in 5 secs.'); 
+					setTimeout(removeLogger, 5 * 1000);
 				}
 			});
 	}
@@ -88,6 +110,7 @@ function init() {
 		if (existingCandidate) {
 			if (nomination.status == 'ACCEPTED') {
 				// Ok, we don't have to track it any longer.
+				logMessage(`Approved candidate ${nomination.title}`);
 				deleteCandidate(nomination);
 				delete currentCandidates[id];
 				return true
@@ -122,11 +145,10 @@ function init() {
 				// if it finds a candidate in the same level 17 cell and less than 20 meters away, handle it as the nomination for this
 				if (candidate.cell17id == cell17id && getDistance(candidate, nomination) < 20) {
 					// if we find such candidate, remove it because we're gonna add now the new one with a new id
-					console.log('Found manual candidate for ' + candidate.title);
+					logMessage(`Found manual candidate for ${candidate.title}`);
 					deleteCandidate({id: idx});
 				}
 			});
-
 			addCandidate(nomination);
 			currentCandidates[nomination.id] = {
 				cell17id: S2.S2Cell.FromLatLng(nomination, 17).toString(),
@@ -155,6 +177,7 @@ function init() {
 	}
 
 	function addCandidate(nomination) {
+		logMessage(`New candidate ${nomination.title}`);
 		console.log('Tracking new nomination', nomination);
 		updateStatus(nomination, 'submitted'); 
 	}
@@ -168,6 +191,7 @@ function init() {
 		if (existingCandidate.status == 'rejected')
 			return;
 
+		logMessage(`Rejected nomination ${nomination.title}`);
 		console.log('Rejected nomination', nomination);
 		updateStatus(nomination, 'rejected'); 
 	}
@@ -185,6 +209,28 @@ function init() {
 
 		formData.append('nickname', 'wayfarer'); // fixme: get player
 
+		// if there's an error, let's retry 3 times. This is a custom property for us.
+		formData.retries = 3;
+
+		pendingUpdates.push(formData);
+		totalUpdates++;
+		sendUpdate();
+	}
+
+	// Send updates one by one to avoid errors from Google
+	function sendUpdate() {
+		updateProgressLog();
+
+		if (sendingUpdates >= maxSendingUpdates)
+			return;
+		if (pendingUpdates.length == 0)
+			return;
+
+		sentUpdates++;
+		sendingUpdates++;
+		updateProgressLog();
+
+		const formData = pendingUpdates.shift();
 		const options = {
 			method: 'POST',
 			body: formData
@@ -193,9 +239,25 @@ function init() {
 		fetch(getUrl(), options)
 			.then(data => {}) 
 			.catch(error => {
-				console.log('Catched fetch comment error', error); // eslint-disable-line no-console
-				alert(error);
-			}); 
+				console.log('Catched fetch error', error); // eslint-disable-line no-console
+				logMessage(error);
+				// one retry less
+				formData.retries--;
+				if (formData.retries > 0) {
+					// if we should still retry, put it at the end of the queue
+					pendingUpdates.push(formData);
+				}
+			})
+			.finally(() => {sendingUpdates--; sendUpdate();}); 
+	}
+
+	function updateProgressLog() {
+		const count = pendingUpdates.length;
+
+		if (count == 0)
+			updateLog.textContent = `All updates sent.`;
+		else
+			updateLog.textContent = `Sending ${sentUpdates}/${totalUpdates} updates to the spreadsheet.`;
 	}
 
 	function getUrl() {
@@ -239,6 +301,30 @@ function init() {
 			a.sidebar-item.sidebar-wayfarerexporter:hover {
 				padding-left: 22px;
 				text-decoration: none;
+			}
+
+			.wayfarer-exporter_log {
+				background: #fff;
+				box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+				display: flex;
+				flex-direction: column;
+				max-height: 100%;
+				padding: 5px;
+				position: absolute;
+				top: 0;
+				z-index: 2;
+			}
+			.wayfarer-exporter_log h3 {
+				margin-right: 1em;
+				margin-top: 0;
+			}
+			.wayfarer-exporter_closelog	{
+				cursor: pointer;
+				position: absolute;
+				right: 0;
+			}
+			.wayfarer-exporter_log-wrapper {
+				overflow: auto;
 			}
 			`;
 		const style = document.createElement('style');
@@ -298,6 +384,9 @@ function init() {
 				localStorage['wayfarerexporter-url'] = url;
 				localStorage['wayfarerexporter-lastupdate'] = (new Date()).getTime();
 				localStorage['wayfarerexporter-candidates'] = JSON.stringify(candidates);
+				const tracked = Object.keys(candidates).length;
+				logMessage(`Loaded a total of ${allData.length} candidates from the spreadsheet.`);
+				logMessage(`Currently tracking: ${tracked}.`);
 
 				return candidates;
 			})
@@ -308,6 +397,39 @@ function init() {
 			});
 	}
 
+	function removeLogger() {
+		logger.parentNode.removeChild(logger);
+		logger = null;
+	}
+
+	function logMessage(txt) {
+		if (!logger) {
+			logger = document.createElement('div');
+			logger.className = 'wayfarer-exporter_log';
+			document.body.appendChild(logger);
+			var img = document.createElement('img');
+			img.src = '/img/sidebar/clear-24px.svg';
+			img.className = 'wayfarer-exporter_closelog';
+			img.height = 24;
+			img.width = 24;
+			img.addEventListener('click', removeLogger);
+			logger.appendChild(img);
+			var title = document.createElement('h3');
+			title.textContent = 'Wayfarer exporter';
+			logger.appendChild(title);
+
+			updateLog = document.createElement('div');
+			updateLog.className = 'wayfarer-exporter_log-counter';
+			logger.appendChild(updateLog);
+
+			msgLog = document.createElement('div');
+			msgLog.className = 'wayfarer-exporter_log-wrapper';
+			logger.appendChild(msgLog);
+		}
+		var div = document.createElement('div');
+		div.textContent = txt;
+		msgLog.appendChild(div);
+	}
 
 /** 
  S2 extracted from Regions Plugin
