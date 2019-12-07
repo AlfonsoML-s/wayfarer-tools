@@ -29,6 +29,7 @@
 	let plottedmarkers = {};
 	let plottedtitles = {};
 	let plottedsubmitrange = {};
+	let plottedinteractrange = {};
 
 	// Define the layers created by the plugin, one for each marker status
 	const mapLayers = {
@@ -67,6 +68,7 @@
 	const defaultSettings = {
 		showTitles: true,
 		showRadius: false,
+		showInteractionRadius: false,
 		scriptURL: ''
 	}
 	let settings = defaultSettings;
@@ -155,6 +157,21 @@
 
 			plottedsubmitrange[candidate.id] = circle;
 		}
+		if (settings.showInteractionRadius) {
+			const latlng = L.latLng(candidate.lat, candidate.lng);
+
+			// Specify the interaction circle options
+			const circleOptions = {color: 'grey', opacity: 1, fillOpacity: 0, weight: 1, clickable: false, interactive: false};
+			const range = 40;
+
+			// Create the circle object with specified options
+			const circle = new L.Circle(latlng, range, circleOptions);
+			// Add the new circle 
+			const existingMarker = plottedmarkers[candidate.id];
+			existingMarker.layer.addLayer(circle);
+
+			plottedinteractrange[candidate.id] = circle;
+		}
 	};
 
 	function removeExistingCircle(guid) {
@@ -163,6 +180,12 @@
 			const existingMarker = plottedmarkers[guid];
 			existingMarker.layer.removeLayer(existingCircle);
 			delete plottedsubmitrange[guid];
+		}
+		const existingInteractCircle = plottedinteractrange[guid];
+		if (existingInteractCircle !== undefined) {
+			const existingMarker = plottedmarkers[guid];
+			existingMarker.layer.removeLayer(existingInteractCircle);
+			delete plottedinteractrange[guid];
 		}
 	};
 
@@ -248,6 +271,7 @@
 		plottedmarkers = {};
 		plottedtitles = {};
 		plottedsubmitrange = {};
+		plottedinteractrange = {};
 	};
 
 	function drawMarkers() {
@@ -421,6 +445,7 @@
 			 <p><a class='wayfarer-refresh'>Update candidate data</a></p>
 			 <p><input type="checkbox" id="chkShowTitles"><label for="chkShowTitles">Show titles</label></p>
 			 <p><input type="checkbox" id="chkShowRadius"><label for="chkShowRadius">Show submit radius</label></p>
+			 <p><input type="checkbox" id="chkShowInteractRadius"><label for="chkShowInteractRadius">Show interaction radius</label></p>
 			 <p><input type="checkbox" id="chkPlaceMarkers"><label for="chkPlaceMarkers">Click on the map to add markers</label></p>
 			`;
 
@@ -469,6 +494,13 @@
 		chkShowRadius.checked = settings.showRadius;
 		chkShowRadius.addEventListener('change', e => {
 			settings.showRadius = chkShowRadius.checked;
+			saveSettings();
+			drawMarkers();
+		});
+		const chkShowInteractRadius = div.querySelector('#chkShowInteractRadius');
+		chkShowInteractRadius.checked = settings.showInteractionRadius;
+		chkShowInteractRadius.addEventListener('change', e => {
+			settings.showInteractionRadius = chkShowInteractRadius.checked;
 			saveSettings();
 			drawMarkers();
 		});
