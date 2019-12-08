@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.5
+// @version      0.5.1
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js
@@ -85,7 +85,7 @@ function init() {
 				currentCandidates = candidates;
 				logMessage(`Analyzing ${sentNominations.length} nominations.`);
 				let modifiedCandidates = false;
-				sentNominations.slice(0, 10).forEach(nomination => {
+				sentNominations.forEach(nomination => {
 					if (checkNomination(nomination))
 						modifiedCandidates = true;
 				});
@@ -107,6 +107,7 @@ function init() {
 		const id = nomination.id;
 		// if we're already tracking it...
 		const existingCandidate = currentCandidates[id];
+
 		if (existingCandidate) {
 			if (nomination.status == 'ACCEPTED') {
 				// Ok, we don't have to track it any longer.
@@ -131,7 +132,7 @@ function init() {
 				return true
 			}
 			return false;
-		} 
+		}
 
 		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING') {
 			/*
