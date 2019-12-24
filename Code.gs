@@ -1,6 +1,6 @@
 // Version 2
 
-var sheetName = 'Total Recon'
+var sheetName = 'WayFarer Planner'
 var scriptProperties = PropertiesService.getScriptProperties()
 
 // Run the function initialsetup to create the sheet for storing and retrieving our data
