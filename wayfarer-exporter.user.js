@@ -93,7 +93,7 @@ function init() {
 					localStorage['wayfarerexporter-candidates'] = JSON.stringify(currentCandidates);
 				} else {
 					logMessage('No modifications detected on the nominations.');
-					logMessage('Closing in 5 secs.'); 
+					logMessage('Closing in 5 secs.');
 					setTimeout(removeLogger, 5 * 1000);
 				}
 			});
@@ -174,18 +174,18 @@ function init() {
 		const dLong = rad(p2.lng - p1.lng);
 		const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
 		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		return R * c; // returns the distance in meter	
+		return R * c; // returns the distance in meter
 	}
 
 	function addCandidate(nomination) {
 		logMessage(`New candidate ${nomination.title}`);
 		console.log('Tracking new nomination', nomination);
-		updateStatus(nomination, 'submitted'); 
+		updateStatus(nomination, 'submitted');
 	}
 
 	function deleteCandidate(nomination) {
 		console.log('Deleting nomination', nomination);
-		updateStatus(nomination, 'delete'); 
+		updateStatus(nomination, 'delete');
 	}
 
 	function rejectCandidate(nomination, existingCandidate) {
@@ -194,7 +194,7 @@ function init() {
 
 		logMessage(`Rejected nomination ${nomination.title}`);
 		console.log('Rejected nomination', nomination);
-		updateStatus(nomination, 'rejected'); 
+		updateStatus(nomination, 'rejected');
 	}
 
 	function updateStatus(nomination, newStatus) {
@@ -238,7 +238,7 @@ function init() {
 		};
 
 		fetch(getUrl(), options)
-			.then(data => {}) 
+			.then(data => {})
 			.catch(error => {
 				console.log('Catched fetch error', error); // eslint-disable-line no-console
 				logMessage(error);
@@ -249,7 +249,7 @@ function init() {
 					pendingUpdates.push(formData);
 				}
 			})
-			.finally(() => {sendingUpdates--; sendUpdate();}); 
+			.finally(() => {sendingUpdates--; sendUpdate();});
 	}
 
 	function updateProgressLog() {
@@ -432,7 +432,7 @@ function init() {
 		msgLog.appendChild(div);
 	}
 
-/** 
+/**
  S2 extracted from Regions Plugin
  https:static.iitc.me/build/release/plugins/regions.user.js
 */
@@ -453,13 +453,13 @@ function init() {
 		if (temp[0] > temp[1]) {
 			if (temp[0] > temp[2]) {
 				return 0;
-			} 
+			}
 			return 2;
-		} 
+		}
 
 		if (temp[1] > temp[2]) {
 			return 1;
-		} 
+		}
 
 		return 2;
 	}
@@ -474,7 +474,7 @@ function init() {
 			case 3: u =	xyz[2] / xyz[0];	v = xyz[1] / xyz[0]; break;
 			case 4: u =	xyz[2] / xyz[1];	v = -xyz[0] / xyz[1]; break;
 			case 5: u = -xyz[1] / xyz[2];	v = -xyz[0] / xyz[2]; break;
-			default: throw {error: 'Invalid face'}; 
+			default: throw {error: 'Invalid face'};
 		}
 
 		return [u, v];
@@ -496,9 +496,9 @@ function init() {
 		const singleUVtoST = function (uv) {
 			if (uv >= 0) {
 				return 0.5 * Math.sqrt (1 + 3 * uv);
-			} 
+			}
 			return 1 - 0.5 * Math.sqrt (1 - 3 * uv);
-			
+
 		};
 
 		return [singleUVtoST(uv[0]), singleUVtoST(uv[1])];

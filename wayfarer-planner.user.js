@@ -92,7 +92,7 @@
 
 	// importing from totalrecon_settings will be removed after a little while
 	function upgradeSettings() {
-		const tmp = localStorage['totalrecon_settings']; 
+		const tmp = localStorage['totalrecon_settings'];
 		if (!tmp)
 			return;
 
@@ -151,7 +151,7 @@
 
 			// Create the circle object with specified options
 			const circle = new L.Circle(latlng, range, circleOptions);
-			// Add the new circle 
+			// Add the new circle
 			const existingMarker = plottedmarkers[candidate.id];
 			existingMarker.layer.addLayer(circle);
 
@@ -166,7 +166,7 @@
 
 			// Create the circle object with specified options
 			const circle = new L.Circle(latlng, range, circleOptions);
-			// Add the new circle 
+			// Add the new circle
 			const existingMarker = plottedmarkers[candidate.id];
 			existingMarker.layer.addLayer(circle);
 
@@ -254,7 +254,7 @@
 			drawInputPopop(latlng, data);
 		});
 
-		marker.on('dragstart', function (e) { 
+		marker.on('dragstart', function (e) {
 			const guid = e.target.options.data.id;
 			removeExistingTitle(guid);
 			removeExistingCircle(guid);
@@ -441,7 +441,7 @@
 		if (window.isSmartphone())
 			window.show('map');
 
-		const html = 
+		const html =
 			`<p><label for="txtScriptUrl">Url for the script</label><br><input type="url" id="txtScriptUrl" spellcheck="false" placeholder="https://script.google.com/macros/***/exec"></p>
 			 <p><a class='wayfarer-refresh'>Update candidate data</a></p>
 			 <p><input type="checkbox" id="chkShowTitles"><label for="chkShowTitles">Show titles</label></p>
@@ -466,7 +466,7 @@
 						getStoredData();
 					}
 
-					container.dialog('close');					
+					container.dialog('close');
 				}
 			}
 		});
@@ -543,7 +543,7 @@
 				color: gold;
 				opacity: 0.7;
 				text-align: center;
-				text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000, 0 0 2px #000; 
+				text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000, 0 0 2px #000;
 				pointer-events: none;
 			}
 			#txtScriptUrl {
