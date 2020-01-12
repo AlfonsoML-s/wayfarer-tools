@@ -17,7 +17,7 @@
 /* globals L, map */
 /* globals GM_info, $, dialog */
 
-;(function () { // eslint-disable-line no-extra-semi
+;function wrapper(plugin_info) { // eslint-disable-line no-extra-semi
 	'use strict';
 
 	// PLUGIN START ///////////////////////////////////////////////////////
