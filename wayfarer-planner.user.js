@@ -17,7 +17,7 @@
 /* globals L, map */
 /* globals GM_info, $, dialog */
 
-;function wrapper(plugin_info) {
+;(function () { // eslint-disable-line no-extra-semi
 	'use strict';
 
 	// PLUGIN START ///////////////////////////////////////////////////////
@@ -62,7 +62,7 @@
 			color: 'purple',
 			title: 'Sent edit',
 			optionTitle: 'Edit location. Sent'
-		},
+		}
 	};
 
 	const defaultSettings = {
@@ -70,7 +70,7 @@
 		showRadius: false,
 		showInteractionRadius: false,
 		scriptURL: ''
-	}
+	};
 	let settings = defaultSettings;
 
 	function saveSettings() {
@@ -114,12 +114,9 @@
 			type: 'GET',
 			dataType: 'text',
 			success: function (data, status, header) {
-				try
-				{
+				try {
 					markercollection = JSON.parse(data);
-				}
-				catch (e)
-				{
+				} catch (e) {
 					console.log('Wayfarer Planner. Exception parsing response: ', e); // eslint-disable-line no-console
 					alert('Wayfarer Planner. Exception parsing response.');
 					return;
@@ -131,7 +128,7 @@
 				alert('Wayfarer Planner. Failed to retrieve data from the scriptURL.');
 			}
 		});
-	};
+	}
 
 	function drawMarker(candidate) {
 		if (candidate != undefined && candidate.lat != '' && candidate.lng != '') {
@@ -139,7 +136,7 @@
 			addTitleToLayer(candidate);
 			addCircleToLayer(candidate);
 		}
-	};
+	}
 
 	function addCircleToLayer(candidate) {
 		if (settings.showRadius) {
@@ -172,7 +169,7 @@
 
 			plottedinteractrange[candidate.id] = circle;
 		}
-	};
+	}
 
 	function removeExistingCircle(guid) {
 		const existingCircle = plottedsubmitrange[guid];
@@ -187,7 +184,7 @@
 			existingMarker.layer.removeLayer(existingInteractCircle);
 			delete plottedinteractrange[guid];
 		}
-	};
+	}
 
 	function addTitleToLayer(candidate) {
 		if (settings.showTitles) {
@@ -209,7 +206,7 @@
 				plottedtitles[candidate.id] = titleMarker;
 			}
 		}
-	};
+	}
 
 	function removeExistingTitle(guid) {
 		const existingTitle = plottedtitles[guid];
@@ -218,7 +215,7 @@
 			existingMarker.layer.removeLayer(existingTitle);
 			delete plottedtitles[guid];
 		}
-	};
+	}
 
 	function removeExistingMarker(guid) {
 		const existingMarker = plottedmarkers[guid];
@@ -262,7 +259,7 @@
 
 		markerLayer.addLayer(marker);
 		plottedmarkers[candidate.id] = {'marker': marker, 'layer': markerLayer};
-	};
+	}
 
 	function clearAllLayers() {
 		Object.values(mapLayers).forEach(data => data.layer.clearLayers());
@@ -272,12 +269,12 @@
 		plottedtitles = {};
 		plottedsubmitrange = {};
 		plottedinteractrange = {};
-	};
+	}
 
 	function drawMarkers() {
 		clearAllLayers();
 		markercollection.forEach(drawMarker);
-	};
+	}
 
 	function onMapClick(e) {
 		if (isPlacingMarkers) {
@@ -294,7 +291,7 @@
 
 			drawInputPopop(e.latlng);
 		}
-	};
+	}
 
 	function drawInputPopop(latlng, markerData) {
 		const formpopup = L.popup();
@@ -358,7 +355,7 @@
 		if (imageUrl !== '' && imageUrl !== undefined) {
 			formContent += ' <a href="' + imageUrl + '" style="padding:4px; float:right;" target="_blank">Image</a>';
 		}
-		var align = id !== '' ? 'float: right' : 'box-sizing: border-box; text-align: right; display: inline-block; width: 100%';
+		const align = id !== '' ? 'float: right' : 'box-sizing: border-box; text-align: right; display: inline-block; width: 100%';
 		formContent += ` <a href="https://www.google.com/maps?layer=c&cbll=${lat},${lng}" style="padding:4px; ${align};" target="_blank">Street View</a>`;
 
 		formpopup.setContent(formContent + '</div>');
@@ -368,7 +365,7 @@
 		if (deleteLink != null) {
 			deleteLink.addEventListener('click', e => confirmDeleteCandidate(e, id));
 		}
-	};
+	}
 
 	function confirmDeleteCandidate(e, id) {
 		e.preventDefault();
@@ -404,7 +401,7 @@
 			editmarker = null;
 		}
 		drawInputPopop(event.layer.getLatLng(), event.layer.options.data);
-	};
+	}
 
 	function getGenericMarkerSvg(color) {
 		const markerTemplate = `<?xml version="1.0" encoding="UTF-8"?>
@@ -416,7 +413,7 @@
 			</svg>`;
 
 		return markerTemplate.replace(/%COLOR%/g, color);
-	};
+	}
 
 	function getGenericMarkerIcon(color, className) {
 		return L.divIcon({
@@ -425,7 +422,7 @@
 			html: getGenericMarkerSvg(color),
 			className: className || 'leaflet-iitc-divicon-generic-marker'
 		});
-	};
+	}
 
 	function createGenericMarker(ll, color, options) {
 		options = options || {};
@@ -435,7 +432,7 @@
 		}, options);
 
 		return L.marker(ll, markerOpt);
-	};
+	}
 
 	function showDialog() {
 		if (window.isSmartphone())
@@ -627,7 +624,7 @@
 }
 // wrapper end
 
-(function() {
+(function () {
 	const plugin_info = {};
 	if (typeof GM_info !== 'undefined' && GM_info && GM_info.script) {
 		plugin_info.script = {

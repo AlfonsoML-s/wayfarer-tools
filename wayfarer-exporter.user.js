@@ -38,7 +38,7 @@ function init() {
 		if (tryNumber === 0) {
 			clearInterval(initWatcher);
 			w.document.querySelector('body')
-				.insertAdjacentHTML('afterBegin', `<div class='alert alert-danger'><strong><span class='glyphicon glyphicon-remove'></span> Wayfarer Exporter initialization failed, refresh page</strong></div>`);
+				.insertAdjacentHTML('afterBegin', '<div class="alert alert-danger"><strong><span class="glyphicon glyphicon-remove"></span> Wayfarer Exporter initialization failed, refresh page</strong></div>');
 			return;
 		}
 		if (w.angular) {
@@ -78,7 +78,7 @@ function init() {
 			return;
 		}
 		getAllCandidates()
-			.then(function(candidates) {
+			.then(function (candidates) {
 				if (!candidates)
 					return;
 
@@ -114,22 +114,22 @@ function init() {
 				logMessage(`Approved candidate ${nomination.title}`);
 				deleteCandidate(nomination);
 				delete currentCandidates[id];
-				return true
+				return true;
 			}
 			if (nomination.status == 'REJECTED') {
 				rejectCandidate(nomination, existingCandidate);
 				delete currentCandidates[id];
-				return true
+				return true;
 			}
 			if (nomination.status == 'DUPLICATE') {
 				rejectCandidate(nomination, existingCandidate);
 				delete currentCandidates[id];
-				return true
+				return true;
 			}
 			if (nomination.status == 'WITHDRAWN') {
 				rejectCandidate(nomination, existingCandidate);
 				delete currentCandidates[id];
-				return true
+				return true;
 			}
 			return false;
 		}
@@ -140,7 +140,7 @@ function init() {
 			same name in the same level 17 cell
 			*/
 			const cell17 = S2.S2Cell.FromLatLng(nomination, 17);
-			const cell17id = cell17.toString()
+			const cell17id = cell17.toString();
 			Object.keys(currentCandidates).forEach(idx => {
 				const candidate = currentCandidates[idx];
 				// if it finds a candidate in the same level 17 cell and less than 20 meters away, handle it as the nomination for this
@@ -165,7 +165,7 @@ function init() {
 
 	// https://stackoverflow.com/a/1502821/250294
 	function getDistance(p1, p2) {
-		const rad = function(x) {
+		const rad = function (x) {
 			return x * Math.PI / 180;
 		};
 
@@ -256,7 +256,7 @@ function init() {
 		const count = pendingUpdates.length;
 
 		if (count == 0)
-			updateLog.textContent = `All updates sent.`;
+			updateLog.textContent = 'All updates sent.';
 		else
 			updateLog.textContent = `Sending ${sentUpdates}/${totalUpdates} updates to the spreadsheet.`;
 	}
@@ -276,7 +276,7 @@ function init() {
 
 		ref.parentNode.insertBefore(link, ref.nextSibling);
 
-		link.addEventListener('click', function(e) {
+		link.addEventListener('click', function (e) {
 			e.preventDefault();
 
 			const currentUrl = getUrl();
@@ -370,10 +370,10 @@ function init() {
 			.then(function (response) {return response.text();})
 			.then(function (data) {return JSON.parse(data);})
 			.then(function (allData) {
-				const submitted = allData.filter(c => (c.status == 'submitted' || c.status == 'potential' || c.status == 'rejected'));
+				const submitted = allData.filter(c => c.status == 'submitted' || c.status == 'potential' || c.status == 'rejected');
 
 				const candidates = {};
-				submitted.forEach( c => {
+				submitted.forEach(c => {
 					candidates[c.id] = {
 						cell17id: S2.S2Cell.FromLatLng(c, 17).toString(),
 						title: c.title,
@@ -381,7 +381,7 @@ function init() {
 						lng: c.lng,
 						status: c.status
 					};
-				})
+				});
 				localStorage['wayfarerexporter-url'] = url;
 				localStorage['wayfarerexporter-lastupdate'] = (new Date()).getTime();
 				localStorage['wayfarerexporter-candidates'] = JSON.stringify(candidates);
@@ -391,7 +391,7 @@ function init() {
 
 				return candidates;
 			})
-			.catch(function(e) {
+			.catch(function (e) {
 				console.log(e); // eslint-disable-line no-console
 				alert(e);
 				return null;
@@ -408,14 +408,14 @@ function init() {
 			logger = document.createElement('div');
 			logger.className = 'wayfarer-exporter_log';
 			document.body.appendChild(logger);
-			var img = document.createElement('img');
+			const img = document.createElement('img');
 			img.src = '/img/sidebar/clear-24px.svg';
 			img.className = 'wayfarer-exporter_closelog';
 			img.height = 24;
 			img.width = 24;
 			img.addEventListener('click', removeLogger);
 			logger.appendChild(img);
-			var title = document.createElement('h3');
+			const title = document.createElement('h3');
 			title.textContent = 'Wayfarer exporter';
 			logger.appendChild(title);
 
@@ -427,15 +427,15 @@ function init() {
 			msgLog.className = 'wayfarer-exporter_log-wrapper';
 			logger.appendChild(msgLog);
 		}
-		var div = document.createElement('div');
+		const div = document.createElement('div');
 		div.textContent = txt;
 		msgLog.appendChild(div);
 	}
 
-/**
- S2 extracted from Regions Plugin
- https:static.iitc.me/build/release/plugins/regions.user.js
-*/
+	/**
+	 S2 extracted from Regions Plugin
+	 https:static.iitc.me/build/release/plugins/regions.user.js
+	*/
 	const S2 = {};
 	const d2r = Math.PI / 180.0;
 
