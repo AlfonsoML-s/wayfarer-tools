@@ -39,12 +39,12 @@
 			optionTitle: 'Potential'
 		},
 		submitted: {
-			color: 'orange',
+			color: '#DF471C',
 			title: 'Submitted',
 			optionTitle: 'Submitted'
 		},
 		live: {
-			color: 'green',
+			color: '#23FEF8',
 			title: 'Accepted',
 			optionTitle: 'Live'
 		},
@@ -406,10 +406,8 @@
 	function getGenericMarkerSvg(color) {
 		const markerTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 			<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" viewBox="0 0 25 41">
-				<path d="M1.362 18.675a12.5 12.5 0 1 1 22.276 0L12.5 40.534z" fill="%COLOR%"/>
-				<path d="M1.808 18.448a12 12 0 1 1 21.384 0L12.5 39.432z" stroke="#000" stroke-opacity=".15" fill="none"/>
-				<path d="M2.922 17.88a10.75 10.75 0 1 1 19.156 0L12.5 36.68z" stroke="#fff" stroke-width="1.5" stroke-opacity=".35" fill="none"/>
-				<path d="M19.861 17.25L12.5 21.5l-7.361-4.25v-8.5L12.5 4.5l7.361 4.25zm-12.124-7h9.526L12.5 18.5zM12.5 13l-4.763-2.75M12.5 13l4.763-2.75M12.5 13v5.5m7.361-1.25l-3.464-2m-11.258 2l3.464-2M12.5 4.5v4" stroke="#fff" stroke-width="1.25" fill="none"/>
+				<path d="M19.4,3.1c-3.3-3.3-6.1-3.3-6.9-3.1c-0.6,0-3.7,0-6.9,3.1c-4,4-1.3,9.4-1.3,9.4s5.6,14.6,6.3,16.3c0.6,1.2,1.3,1.5,1.7,1.5c0,0,0,0,0.2,0h0.2c0.4,0,1.2-0.4,1.7-1.5c0.8-1.7,6.3-16.3,6.3-16.3S23.5,7.2,19.4,3.1z M13.1,12.4c-2.3,0.4-4.4-1.5-4-4c0.2-1.3,1.3-2.5,2.9-2.9c2.3-0.4,4.4,1.5,4,4C15.6,11,14.4,12.2,13.1,12.4z" fill="%COLOR%" stroke="#fff"/>
+				<path d="M12.5,34.1c1.9,0,3.5,1.5,3.5,3.5c0,1.9-1.5,3.5-3.5,3.5S9,39.5,9,37.5c0-1.2,0.6-2.2,1.5-2.9 C11.1,34.3,11.8,34.1,12.5,34.1z" fill="%COLOR%" stroke="#fff"/>
 			</svg>`;
 
 		return markerTemplate.replace(/%COLOR%/g, color);
