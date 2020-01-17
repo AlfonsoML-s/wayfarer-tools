@@ -39,12 +39,12 @@
 			optionTitle: 'Potential'
 		},
 		submitted: {
-			color: '#DF471C',
+			color: 'orange',
 			title: 'Submitted',
 			optionTitle: 'Submitted'
 		},
 		live: {
-			color: '#23FEF8',
+			color: 'green',
 			title: 'Accepted',
 			optionTitle: 'Live'
 		},
