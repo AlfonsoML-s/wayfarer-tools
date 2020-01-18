@@ -455,8 +455,20 @@
 					if (!txtInput.reportValidity())
 						return;
 
+					if (newUrl != '') {
+						if (!newUrl.startsWith('https://script.google.com/macros/')) {
+							alert('The URL of the script seems to be wrong, please paste the URL provided after "creating the webapp".');
+							return;
+						}
+
+						if (newUrl.includes('echo') || !newUrl.endsWith('exec')) {
+							alert('You must use the short URL provided by "creating the webapp", not the long one after executing the script.');
+							return;
+						}
+					}
+
 					if (newUrl != settings.scriptURL) {
-						settings.scriptURL = txtInput.value;
+						settings.scriptURL = newUrl;
 						saveSettings();
 						getStoredData();
 					}
