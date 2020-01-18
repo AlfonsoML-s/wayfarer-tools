@@ -106,8 +106,11 @@
 
 	function getStoredData() {
 		const url = settings.scriptURL;
-		if (!url)
+		if (!url) {
+			markercollection = [];
+			drawMarkers();
 			return;
+		}
 
 		$.ajax({
 			url: url,
