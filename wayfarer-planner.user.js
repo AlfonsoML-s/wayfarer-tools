@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.10.1
+// @version      1.11
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -328,7 +328,7 @@
 			.map(id => '<option value="' + id + '"' + (id == status ? ' selected="selected"' : '') + '>' + mapLayers[id].optionTitle + '</option>')
 			.join('');
 
-		let formContent = `<div style="width:200px;"><form id="submit-to-wayfarer">
+		let formContent = `<div class="wayfarer-planner-popup"><form id="submit-to-wayfarer">
 			<label>Status
 			<select name="status">${options}</select>
 			</label>
@@ -338,17 +338,20 @@
 			<label>Description
 			<input name="description" type="text" autocomplete="off" placeholder="Description" value="${description}">
 			</label>
+			<div class='wayfarer-expander' title='Click to expand additional fields'>»</div>
+			<div class='wayfarer-extraData'>
 			<label>Submitted date
 			<input name="submitteddate" type="text" autocomplete="off" placeholder="dd-mm-jjjj" value="${submitteddate}">
 			</label>
 			<label>Image
 			<input name="candidateimageurl" type="text" autocomplete="off" placeholder="http://?.googleusercontent.com/***" value="${imageUrl}">
 			</label>
+			</div>
 			<input name="id" type="hidden" value="${id}">
 			<input name="lat" type="hidden" value="${lat}">
 			<input name="lng" type="hidden" value="${lng}">
 			<input name="nickname" type="hidden" value="${window.PLAYER.nickname}">
-			<button type="submit" style="width:100%; height:30px;">Send</button>
+			<button type="submit" id='wayfarer-submit'>Send</button>
 			</form>`;
 
 		if (id !== '') {
@@ -368,6 +371,11 @@
 		if (deleteLink != null) {
 			deleteLink.addEventListener('click', e => confirmDeleteCandidate(e, id));
 		}
+		const expander = formpopup._contentNode.querySelector('.wayfarer-expander');
+		expander.addEventListener('click', function () {
+			expander.parentNode.classList.toggle('wayfarer__expanded');
+		});
+
 	}
 
 	function confirmDeleteCandidate(e, id) {
@@ -547,7 +555,14 @@
 
 		$('<style>')
 			.prop('type', 'text/css')
-			.html(`.wayfarer-planner-name {
+			.html(`
+			.wayfarer-planner-popup {
+				width:200px;
+			}
+			.wayfarer-planner-popup a {
+				color: #ffce00;
+			}
+			.wayfarer-planner-name {
 				font-size: 12px;
 				font-weight: bold;
 				color: gold;
@@ -563,15 +578,51 @@
 				opacity: 0.8;
 				pointer-events: none;
 			}
+
+			#submit-to-wayfarer {
+				position: relative;
+			}
 			#submit-to-wayfarer input,
 			#submit-to-wayfarer select {
 				width: 100%;
+			}
+			#submit-to-wayfarer input {
+				color: #CCC;
 			}
 			#submit-to-wayfarer label {
 				margin-top: 5px;
 				display: block;
 				color: #fff;
 			}
+			#wayfarer-submit {
+				height: 30px;
+				margin-top: 10px;
+				width: 100%;
+			}
+
+			.wayfarer-expander {
+				cursor: pointer;
+				transform: rotate(90deg) translate(-1px, 1px);
+				transition: transform .2s ease-out 0s;
+				position: absolute;
+				right: 0;
+			}
+
+			.wayfarer-extraData {
+				max-height: 0;
+				overflow: hidden;
+				margin-top: 1em;
+			}
+
+			.wayfarer__expanded .wayfarer-expander {
+				transform: rotate(270deg) translate(1px, -3px);
+			}
+
+			.wayfarer__expanded .wayfarer-extraData {
+				max-height: none;
+				margin-top: 0em;
+			}
+
 			`)
 			.appendTo('head');
 
