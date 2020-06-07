@@ -271,7 +271,7 @@ function init() {
 		const link = document.createElement('a');
 		link.className = 'sidebar-item sidebar-wayfarerexporter';
 		link.title = 'Configure Exporter';
-		link.innerHTML = '<span class="glyphicon glyphicon-share"></span> Exporter';
+		link.innerHTML = '<m class="glyphicon glyphicon-share"></m><span> Exporter</span>';
 		const ref = document.querySelector('.sidebar-nominations');
 
 		ref.parentNode.insertBefore(link, ref.nextSibling);
@@ -291,16 +291,12 @@ function init() {
 
 	function addCss() {
 		const css = `
-			span.glyphicon.glyphicon-share {
-				margin-right: 13px;
-			}
-
-			a.sidebar-item.sidebar-wayfarerexporter {
-				padding-left: 27px;
+			.glyphicon.glyphicon-share {
+				font-size: 22px;
+				margin-left: 2px
 			}
 
 			a.sidebar-item.sidebar-wayfarerexporter:hover {
-				padding-left: 22px;
 				text-decoration: none;
 			}
 
