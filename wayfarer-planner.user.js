@@ -128,7 +128,7 @@
 			},
 			error: function (x, y, z) {
 				console.log('Wayfarer Planner. Error message: ', x, y, z); // eslint-disable-line no-console
-				alert('Wayfarer Planner. Failed to retrieve data from the scriptURL.');
+				alert('Wayfarer Planner. Failed to retrieve data from the scriptURL.\r\nVerify that you\'re using the right URL and that you don\'t use any extension that blocks access to google.');
 			}
 		});
 	}
@@ -644,7 +644,7 @@
 				},
 				error: function (x, y, z) {
 					console.log('Wayfarer Planner. Error message: ', x, y, z); // eslint-disable-line no-console
-					alert('Wayfarer Planner. Failed to send data to the scriptURL');
+					alert('Wayfarer Planner. Failed to send data to the scriptURL.\r\nVerify that you\'re using the right URL and that you don\'t use any extension that blocks access to google.');
 				}
 			});
 		});

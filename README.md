@@ -18,7 +18,8 @@ It's easy to use, but it requires a bit of configuration if you want to create y
 If you want to make use of an existing sheet. Install the <a href="https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js?inline=false">userscript</a>, load IITC and enter the scripturl.<br/>
 <img src="https://gitlab.com/AlfonsoML/wayfarer/raw/master/assets/enterscripturl.png"></img><br/>
  You can test it out with this script url
-Test script url: https://script.google.com/macros/s/AKfycbyBx4dR0s8v1ZEsnuKFARfmibHiqTY20qO0EU3vRML4y4XW6wmu/exec Keep in mind that this a shared sheet, after checking that the plugin works as expected you must use your own sheet instead of this one.
+Test script url: https://script.google.com/macros/s/AKfycbyBx4dR0s8v1ZEsnuKFARfmibHiqTY20qO0EU3vRML4y4XW6wmu/exec Keep in mind that this a shared sheet, after checking that the plugin works as expected you must use your own sheet instead of this one.<br/>
+If you're using any extension that blocks Google domains like Privacy Badger you'll have to unblock it for this domain.
 
 List of functions is at the end of this page
 
@@ -71,6 +72,7 @@ List of functions is at the end of this page
 
  17. Install the <a href="https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js">userscript</a>. On first launch you will be prompted to enter this URL.<br/>
 <img src="https://gitlab.com/AlfonsoML/wayfarer/raw/master/assets/enterscripturl.png"></img><br/>
+If you're using any extension that blocks Google domains like Privacy Badger you'll have to unblock it for this domain.<br/>
 
 You will need to share this URL with all people and/or devices who will share the same set of data.
 

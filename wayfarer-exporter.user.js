@@ -389,7 +389,7 @@ function init() {
 			})
 			.catch(function (e) {
 				console.log(e); // eslint-disable-line no-console
-				alert(e);
+				alert('Wayfarer Planner. Failed to retrieve data from the scriptURL.\r\nVerify that you\'re using the right URL and that you don\'t use any extension that blocks access to google.');
 				return null;
 			});
 	}
