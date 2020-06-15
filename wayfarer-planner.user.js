@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.11
+// @version      1.12
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -162,7 +162,7 @@
 
 			// Specify the interaction circle options
 			const circleOptions = {color: 'grey', opacity: 1, fillOpacity: 0, weight: 1, clickable: false, interactive: false};
-			const range = 40;
+			const range = 80;
 
 			// Create the circle object with specified options
 			const circle = new L.Circle(latlng, range, circleOptions);
