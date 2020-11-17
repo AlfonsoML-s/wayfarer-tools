@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.5.1
+// @version      0.5.2
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js
@@ -272,7 +272,7 @@ function init() {
 		link.className = 'sidebar-item sidebar-wayfarerexporter';
 		link.title = 'Configure Exporter';
 		link.innerHTML = '<m class="glyphicon glyphicon-share"></m><span> Exporter</span>';
-		const ref = document.querySelector('.sidebar-nominations');
+		const ref = document.querySelector('.sidebar__item--nominations');
 
 		ref.parentNode.insertBefore(link, ref.nextSibling);
 
@@ -540,6 +540,4 @@ function init() {
 }
 
 init();
-
-
 
