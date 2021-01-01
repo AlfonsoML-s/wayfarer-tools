@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.5.2
+// @version      0.5.3
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js
@@ -356,6 +356,14 @@ function init() {
 		}
 		if (!url.startsWith('https://script.google.com/macros/')) {
 			alert('The url of the script seems to be wrong, please paste the URL provided after "creating the webapp"');
+			return null;
+		}
+		if (url.includes('echo') || !url.endsWith('exec')) {
+			alert('You must use the short URL provided by "creating the webapp", not the long one after executing the script.');
+			return null;
+		}
+		if (url.includes(' ')) {
+			alert('Warning, the URL contains at least one space. Check that you\'ve copied it properly.');
 			return null;
 		}
 		const fetchOptions = {

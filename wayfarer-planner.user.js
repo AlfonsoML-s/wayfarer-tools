@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.12
+// @version      1.13
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -474,6 +474,10 @@
 
 						if (newUrl.includes('echo') || !newUrl.endsWith('exec')) {
 							alert('You must use the short URL provided by "creating the webapp", not the long one after executing the script.');
+							return;
+						}
+						if (newUrl.includes(' ')) {
+							alert('Warning, the URL contains at least one space. Check that you\'ve copied it properly.');
 							return;
 						}
 					}
