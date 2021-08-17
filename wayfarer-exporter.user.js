@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.5.3
+// @version      0.6.0
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js
@@ -8,16 +8,14 @@
 // @match        https://wayfarer.nianticlabs.com/*
 // ==/UserScript==
 
-/* globals unsafeWindow */
 /* eslint-env es6 */
 /* eslint no-var: "error" */
 
 function init() {
-	const w = typeof unsafeWindow === 'undefined' ? window : unsafeWindow;
+	//const w = typeof unsafeWindow === 'undefined' ? window : unsafeWindow;
 	let tryNumber = 15;
 
-	let nominationController;
-
+	//let nominationController;
 
 	// queue of updates to send
 	const pendingUpdates = [];
@@ -34,6 +32,7 @@ function init() {
 	let logger;
 	let msgLog;
 
+	/*
 	const initWatcher = setInterval(() => {
 		if (tryNumber === 0) {
 			clearInterval(initWatcher);
@@ -48,7 +47,25 @@ function init() {
 		tryNumber--;
 	}, 1000);
 
+	*/
+	/**
+	 * Overwrite the open method of the XMLHttpRequest.prototype to intercept the server calls
+	 */
+	(function (open) {
+		XMLHttpRequest.prototype.open = function (method, url) {
 
+			if (url == '/api/v1/vault/manage') {
+				if (method == 'GET') {
+					this.addEventListener('load', parseNominations, false);
+				}
+			}
+			open.apply(this, arguments);
+		};
+	})(XMLHttpRequest.prototype.open);
+
+	addConfigurationButton();
+
+	/*
 	function initScript() {
 		const el = w.document.querySelector('.nominations-controller');
 		if (!el) {
@@ -64,19 +81,34 @@ function init() {
 			analyzeCandidates();
 		}
 	}
+	*/
+
+	let sentNominations;
+	function parseNominations(e) {
+		try {
+			const response = this.response;
+			const json = JSON.parse(response);
+			sentNominations = json && json.result;
+			if (!sentNominations) {
+				logMessage('Failed to parse nominations from Wayfarer');
+				return;
+			}
+			analyzeCandidates();
+
+		} catch (e)	{
+			console.log(e); // eslint-disable-line no-console
+		}
+
+	}
 
 	let currentCandidates;
-	function analyzeCandidates() {
-		if (!nominationController.loaded) {
+	function analyzeCandidates(result) {
+
+		if (!sentNominations) {
 			setTimeout(analyzeCandidates, 200);
 			return;
 		}
 
-		const sentNominations = nominationController.nomList;
-		if (!sentNominations) {
-			logMessage('Failed to parse nominations from Wayfarer');
-			return;
-		}
 		getAllCandidates()
 			.then(function (candidates) {
 				if (!candidates)
@@ -266,13 +298,26 @@ function init() {
 	}
 
 	function addConfigurationButton() {
+		const ref = document.querySelector('.sidebar-link[href$="nominations"]');
+
+		if (!ref) {
+			if (tryNumber === 0) {
+				document.querySelector('body')
+					.insertAdjacentHTML('afterBegin', '<div class="alert alert-danger"><strong><span class="glyphicon glyphicon-remove"></span> Wayfarer Exporter initialization failed, refresh page</strong></div>');
+				return;
+			}
+			setTimeout(addConfigurationButton, 1000);
+			tryNumber--;
+			return;
+		}
+
 		addCss();
 
 		const link = document.createElement('a');
-		link.className = 'sidebar-item sidebar-wayfarerexporter';
+		link.className = 'mat-tooltip-trigger sidebar-link sidebar-wayfarerexporter';
 		link.title = 'Configure Exporter';
-		link.innerHTML = '<m class="glyphicon glyphicon-share"></m><span> Exporter</span>';
-		const ref = document.querySelector('.sidebar__item--nominations');
+		link.innerHTML = '<svg viewBox="0 0 24 24" class="sidebar-link__icon"><path d="M12,1L8,5H11V14H13V5H16M18,23H6C4.89,23 4,22.1 4,21V9A2,2 0 0,1 6,7H9V9H6V21H18V9H15V7H18A2,2 0 0,1 20,9V21A2,2 0 0,1 18,23Z" /></svg><span> Exporter</span>';
+		//const ref = document.querySelector('.sidebar__item--nominations');
 
 		ref.parentNode.insertBefore(link, ref.nextSibling);
 
@@ -291,13 +336,11 @@ function init() {
 
 	function addCss() {
 		const css = `
-			.glyphicon.glyphicon-share {
-				font-size: 22px;
-				margin-left: 2px
-			}
-
-			a.sidebar-item.sidebar-wayfarerexporter:hover {
-				text-decoration: none;
+			.sidebar-wayfarerexporter svg {
+				width: 24px;
+				height: 24px;
+				filter: none;
+				fill: currentColor;
 			}
 
 			.wayfarer-exporter_log {
