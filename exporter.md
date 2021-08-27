@@ -14,3 +14,11 @@ You must be running the Tampermonkey extension in your browser (IITC mobile does
 Now just login to Wayfarer and load the page with your nominations, the first time that you load it you'll be prompted for the URL of the script that you're using in Wayfarer Planner, paste it and wait a few seconds, then load in another tab IITC and you'll see markers for your pending nominations.  
 Afterwards you only have to load the page and wait a few seconds after all your candidates are shown.
 
+## How to Install without Tampermonkey.
+This is a very simple script that doesn't really require Tampermonkey, so if your browser doesn't support it (for example you're on mobile with Chrome, and maybe it also works on iOS), then you can install it from the URL bar.  
+Copy this code into your URL bar (check that it starts with ```javascript:``` as the browser might remove it) and press enter, then you should see the "Exporter" entry below the Nominations option in the sidebar
+
+`javascript:(function() {var s = document.createElement('script'); s.src='https://glcdn.githack.com/AlfonsoML/wayfarer/raw/master/wayfarer-exporter.user.js'; s.type='text/javascript'; document.body.appendChild(s);})()`
+
+There are two problems with this option: the first one is that if you reload the page then you must add it again, you might want to create a bookmark (this is why this technique is called 'bookmarklets') to do it easily.  
+The second problem is that if I push any change to the code you won't get it, in order to be able to insert the javascript I'm using a 3rd party service that keeps the data cached for a whole year, so it requires a new URL for each change.
