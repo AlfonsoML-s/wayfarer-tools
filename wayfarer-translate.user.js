@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Translate
-// @version      0.1.0
+// @version      0.1.1
 // @description  Add translate option to Wayfarer
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-translate.user.js
@@ -17,6 +17,8 @@ function init() {
 	let translateButton;
 	let candidate;
 
+	const SPACING = '\r\n\r\n';
+
 	/**
 	 * Overwrite the open method of the XMLHttpRequest.prototype to intercept the server calls
 	 */
@@ -27,7 +29,7 @@ function init() {
 					this.addEventListener('load', parseCandidate, false);
 				}
 				if (method == 'POST') {
-					this.addEventListener('load', hideButton, false);
+					hideButton();
 				}
 			}
 			open.apply(this, arguments);
@@ -80,15 +82,15 @@ function init() {
 		translateButton = link;
 
 		if (candidate.type == 'NEW') {
-
-			const text = candidate.title + '\r\n' + candidate.description + '\r\n' + candidate.statement;
+			const text = candidate.title + SPACING + candidate.description + SPACING + candidate.statement;
 			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
 			translateButton.classList.add('wayfarertranslate__visible');
 		}
+
 		if (candidate.type == 'EDIT') {
-			const title = candidate.titleEdits.map(d=>d.value).join('\r\n');
-			const description = candidate.descriptionEdits.map(d=>d.value).join('\r\n');
-			const text = title + '\r\n\r\n' + description;
+			const title = candidate.title || candidate.titleEdits.map(d=>d.value).join(SPACING);
+			const description = candidate.description || candidate.descriptionEdits.map(d=>d.value).join(SPACING);
+			const text = title + SPACING + SPACING + description;
 			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
 			translateButton.classList.add('wayfarertranslate__visible');
 		}
@@ -106,7 +108,7 @@ function init() {
 				margin-left: 2em;
 				padding-top: 1.1em;
 				text-align: center;
-				/*display: none;*/
+				display: none;
 			}
 
 			.wayfarertranslate__visible {
@@ -121,28 +123,8 @@ function init() {
 				margin: 0 auto;
 			}
 
-			.wayfarer-translate_log {
-				background: #fff;
-				box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
-				display: flex;
-				flex-direction: column;
-				max-height: 100%;
-				padding: 5px;
-				position: absolute;
-				top: 0;
-				z-index: 2;
-			}
-			.wayfarer-translate_log h3 {
-				margin-right: 1em;
-				margin-top: 0;
-			}
-			.wayfarer-translate_closelog	{
-				cursor: pointer;
-				position: absolute;
-				right: 0;
-			}
-			.wayfarer-translate_log-wrapper {
-				overflow: auto;
+			.dark .wayfarertranslate {
+				color: #ddd;
 			}
 			`;
 		const style = document.createElement('style');
