@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Translate
-// @version      0.1.1
+// @version      0.1.2
 // @description  Add translate option to Wayfarer
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-translate.user.js
@@ -42,9 +42,19 @@ function init() {
 		try {
 			const response = this.response;
 			const json = JSON.parse(response);
-			candidate = json && json.result;
+			if (!json) {
+				console.log(response);
+				alert('Failed to parse response from Wayfarer');
+				return;
+			}
+			// ignore if it's related to captchas
+			if (json.captcha)
+				return;
+
+			candidate = json.result;
 			if (!candidate) {
-				alert('Failed to parse candidate from Wayfarer');
+				console.log(json);
+				alert('Wayfarer\'s response didn\'t include a candidate.');
 				return;
 			}
 			addTranslateButton();
@@ -91,6 +101,11 @@ function init() {
 			const title = candidate.title || candidate.titleEdits.map(d=>d.value).join(SPACING);
 			const description = candidate.description || candidate.descriptionEdits.map(d=>d.value).join(SPACING);
 			const text = title + SPACING + SPACING + description;
+			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
+			translateButton.classList.add('wayfarertranslate__visible');
+		}
+		if (candidate.type == 'PHOTO') {
+			const text = candidate.title + SPACING + candidate.description;
 			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
 			translateButton.classList.add('wayfarertranslate__visible');
 		}
