@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Translate
-// @version      0.1.2
+// @version      0.2.0
 // @description  Add translate option to Wayfarer
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-translate.user.js
@@ -18,6 +18,12 @@ function init() {
 	let candidate;
 
 	const SPACING = '\r\n\r\n';
+
+	let engine = localStorage['translate-engine'];
+	if (!engine) {
+		engine = 'Google';
+		localStorage['translate-engine'] = engine;
+	}
 
 	/**
 	 * Overwrite the open method of the XMLHttpRequest.prototype to intercept the server calls
@@ -65,6 +71,16 @@ function init() {
 
 	}
 
+	function getTranslatorLink() {
+		switch (engine) {
+			case 'Google':
+				return 'https://translate.google.com/?sl=auto&q=';
+
+			default:
+				return 'https://www.deepl.com/translator#auto/' + navigator.language + '/';
+		}
+	}
+
 	function addTranslateButton() {
 		const ref = document.querySelector('wf-logo');
 
@@ -80,33 +96,54 @@ function init() {
 		}
 
 
+		const div = document.createElement('div');
+		div.className = 'wayfarertranslate';
 		const link = document.createElement('a');
-		link.className = 'mat-tooltip-trigger wayfarertranslate';
+		link.className = '';
 		link.title = 'Translate nomination';
-		link.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg><span> Translate</span>';
+		link.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>';
 		link.target = '_blank';
 
+		const select = document.createElement('select');
+		select.title = 'Select translation engine';
+		const engines = [
+			{name: 'Google', title: 'Google Translate'},
+			{name: 'DeepL', title: 'DeepL Translate'}
+		];
+
+		select.innerHTML = engines.map(item => `<option value="${item.name}" ${item.name == engine ? 'selected' : ''}>${item.title}</option>`).join('');
+		select.addEventListener('change', function () {
+			console.log(select.value)
+			engine = select.value;
+			localStorage['translate-engine'] = engine;
+			link.href = getTranslatorLink() + encodeURIComponent(link.dataset.text);
+		});
+
+		div.appendChild(link);
+		div.appendChild(select);
+
 		const container = ref.parentNode.parentNode;
-		container.appendChild(link);
+		container.appendChild(div);
 
-		translateButton = link;
+		translateButton = div;
 
+		let text = '';
 		if (candidate.type == 'NEW') {
-			const text = candidate.title + SPACING + candidate.description + SPACING + candidate.statement;
-			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
-			translateButton.classList.add('wayfarertranslate__visible');
+			text = candidate.title + SPACING + candidate.description + SPACING + candidate.statement;
 		}
 
 		if (candidate.type == 'EDIT') {
 			const title = candidate.title || candidate.titleEdits.map(d=>d.value).join(SPACING);
 			const description = candidate.description || candidate.descriptionEdits.map(d=>d.value).join(SPACING);
-			const text = title + SPACING + SPACING + description;
-			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
-			translateButton.classList.add('wayfarertranslate__visible');
+			text = title + SPACING + SPACING + description;
 		}
 		if (candidate.type == 'PHOTO') {
-			const text = candidate.title + SPACING + candidate.description;
-			translateButton.href = 'https://translate.google.com/?sl=auto&q=' + encodeURIComponent(text);
+			text = candidate.title + SPACING + candidate.description;
+		}
+
+		if (text != '') {
+			link.dataset.text = text;
+			link.href = getTranslatorLink() + encodeURIComponent(text);
 			translateButton.classList.add('wayfarertranslate__visible');
 		}
 	}
@@ -121,7 +158,7 @@ function init() {
 			.wayfarertranslate {
 				color: #333;
 				margin-left: 2em;
-				padding-top: 1.1em;
+				padding-top: 0.3em;
 				text-align: center;
 				display: none;
 			}
