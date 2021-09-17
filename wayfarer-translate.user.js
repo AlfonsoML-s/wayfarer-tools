@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Translate
-// @version      0.2.0
+// @version      0.3.0
 // @description  Add translate option to Wayfarer
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-translate.user.js
@@ -81,20 +81,9 @@ function init() {
 		}
 	}
 
-	function addTranslateButton() {
-		const ref = document.querySelector('wf-logo');
-
-		if (!ref) {
-			if (tryNumber === 0) {
-				document.querySelector('body')
-					.insertAdjacentHTML('afterBegin', '<div class="alert alert-danger"><strong><span class="glyphicon glyphicon-remove"></span> Wayfarer Translate initialization failed, refresh page</strong></div>');
-				return;
-			}
-			setTimeout(addTranslateButton, 1000);
-			tryNumber--;
-			return;
-		}
-
+	function createButton(ref) {
+		if (translateButton)
+			return translateButton;
 
 		const div = document.createElement('div');
 		div.className = 'wayfarertranslate';
@@ -113,7 +102,6 @@ function init() {
 
 		select.innerHTML = engines.map(item => `<option value="${item.name}" ${item.name == engine ? 'selected' : ''}>${item.title}</option>`).join('');
 		select.addEventListener('change', function () {
-			console.log(select.value)
 			engine = select.value;
 			localStorage['translate-engine'] = engine;
 			link.href = getTranslatorLink() + encodeURIComponent(link.dataset.text);
@@ -126,6 +114,22 @@ function init() {
 		container.appendChild(div);
 
 		translateButton = div;
+		return translateButton;
+	}
+
+	function addTranslateButton() {
+		const ref = document.querySelector('wf-logo');
+
+		if (!ref) {
+			if (tryNumber === 0) {
+				document.querySelector('body')
+					.insertAdjacentHTML('afterBegin', '<div class="alert alert-danger"><strong><span class="glyphicon glyphicon-remove"></span> Wayfarer Translate initialization failed, refresh page</strong></div>');
+				return;
+			}
+			setTimeout(addTranslateButton, 1000);
+			tryNumber--;
+			return;
+		}
 
 		let text = '';
 		if (candidate.type == 'NEW') {
@@ -142,6 +146,8 @@ function init() {
 		}
 
 		if (text != '') {
+			createButton(ref);
+			const link = translateButton.querySelector('a');
 			link.dataset.text = text;
 			link.href = getTranslatorLink() + encodeURIComponent(text);
 			translateButton.classList.add('wayfarertranslate__visible');
