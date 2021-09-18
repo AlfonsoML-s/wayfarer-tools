@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wayfarer Translate
-// @version      0.3.0
+// @version      0.3.1
 // @description  Add translate option to Wayfarer
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-translate.user.js
@@ -55,6 +55,9 @@ function init() {
 			}
 			// ignore if it's related to captchas
 			if (json.captcha)
+				return;
+
+			if (json.code != 'OK')
 				return;
 
 			candidate = json.result;
