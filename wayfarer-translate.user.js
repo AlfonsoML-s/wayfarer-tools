@@ -187,6 +187,9 @@ function init() {
 			.dark .wayfarertranslate {
 				color: #ddd;
 			}
+			.dark .wayfarertranslate select {
+				background: transparent;
+			}
 			`;
 		const style = document.createElement('style');
 		style.type = 'text/css';
