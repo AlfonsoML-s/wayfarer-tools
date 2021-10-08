@@ -187,8 +187,10 @@ function init() {
 			.dark .wayfarertranslate {
 				color: #ddd;
 			}
-			.dark .wayfarertranslate select {
-				background: transparent;
+
+			.dark .wayfarertranslate select,
+			.dark .wayfarertranslate option {
+				background: #000;
 			}
 			`;
 		const style = document.createElement('style');
