@@ -150,7 +150,8 @@ function init() {
 			}
 			if (nomination.status == 'REJECTED') {
 				rejectCandidate(nomination, existingCandidate);
-				delete currentCandidates[id];
+				//can be appealed, so keeping
+				updateLocalCandidate(id, nomination); 
 				return true;
 			}
 			if (nomination.status == 'DUPLICATE') {
@@ -163,7 +164,11 @@ function init() {
 				delete currentCandidates[id];
 				return true;
 			}
-			
+			if (nomination.status == 'APPEALED') {
+				updateLocalCandidate(id, nomination);	
+				appealCandidate(nomination, existingCandidate);
+				return true;
+			}			
 			//catches following changes: held -> nominated, nominated -> held, held -> nominated -> voting
 			if (statusConvertor(nomination.status) != existingCandidate.status){
 				updateLocalCandidate(id, nomination);				
@@ -174,7 +179,7 @@ function init() {
 			return false;
 		}
 
-		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING' || nomination.status == 'HELD') {
+		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING' || nomination.status == 'HELD' || nomination.status == 'APPEALED') {
 			/*
 			Try to find nominations added manually in IITC:
 			same name in the same level 17 cell
@@ -227,6 +232,9 @@ function init() {
 		if (status == 'REJECTED' || status == 'DUPLICATE' || status == 'WITHDRAWN') {
 			return 'rejected';
 		}
+		if (status == 'APPEALED') {
+			return 'appealed';
+		}
 
 		return status;
 	}
@@ -262,6 +270,15 @@ function init() {
 		logMessage(`Rejected nomination ${nomination.title}`);
 		console.log('Rejected nomination', nomination);
 		updateStatus(nomination, 'rejected');
+	}
+
+	function appealCandidate(nomination, existingCandidate) {
+		if (existingCandidate.status == 'appealed')
+			return;
+
+		logMessage(`Appealed nomination ${nomination.title}`);
+		console.log('Appealed nomination', nomination);
+		updateStatus(nomination, statusConvertor(nomination.status));
 	}
 
 	function updateStatus(nomination, newStatus) {
@@ -452,7 +469,7 @@ function init() {
 			.then(function (response) {return response.text();})
 			.then(function (data) {return JSON.parse(data);})
 			.then(function (allData) {
-				const submitted = allData.filter(c => c.status == 'submitted' || c.status == 'potential' || c.status == 'held' || c.status == 'rejected');
+				const submitted = allData.filter(c => c.status == 'submitted' || c.status == 'potential' || c.status == 'held' || c.status == 'rejected' || c.status == 'appealed');
 
 				const candidates = {};
 				submitted.forEach(c => {
