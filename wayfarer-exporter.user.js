@@ -176,6 +176,14 @@ function init() {
 				return true;
 			}
 
+			//check for title and description updates only
+			if (nomination.title != existingCandidate.title || nomination.description != existingCandidate.description) {
+				currentCandidates[id].title = nomination.title;
+				currentCandidates[id].description = nomination.description;
+				updateCandidate(nomination, 'title or description');
+				return true;
+			}
+
 			return false;
 		}
 
@@ -199,6 +207,7 @@ function init() {
 			currentCandidates[nomination.id] = {
 				cell17id: S2.S2Cell.FromLatLng(nomination, 17).toString(),
 				title: nomination.title,
+				description: nomination.description,
 				lat: nomination.lat,
 				lng: nomination.lng,
 				status: statusConvertor(nomination.status)
@@ -241,7 +250,6 @@ function init() {
 
 	function updateLocalCandidate(id, nomination){
 		currentCandidates[id].status = statusConvertor(nomination.status)
-		//needed only if changes in title and description are tracked and detected
 		currentCandidates[id].title = nomination.title
 		currentCandidates[id].description = nomination.description
 	}
@@ -523,6 +531,7 @@ function init() {
 					candidates[c.id] = {
 						cell17id: S2.S2Cell.FromLatLng(c, 17).toString(),
 						title: c.title,
+						description: c.description,
 						lat: c.lat,
 						lng: c.lng,
 						status: c.status
