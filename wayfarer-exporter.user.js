@@ -283,6 +283,9 @@ function init() {
 
 	function updateStatus(nomination, newStatus) {
 		const formData = new FormData();
+		// if there's an error, let's retry 3 times. This is a custom property for us.
+		formData.retries = 3;
+
 		formData.append('status', newStatus);
 		formData.append('id', nomination.id);
 		formData.append('lat', nomination.lat);
@@ -291,15 +294,59 @@ function init() {
 		formData.append('description', nomination.description);
 		formData.append('submitteddate', nomination.day);
 		formData.append('candidateimageurl', nomination.imageUrl);
+		getName()
+			.then( 
+				name => {
+					formData.append('nickname', name)
+				} 
+			)
+			.catch( 
+				error => {
+					console.log('Catched load name error', error);
+					formData.append('nickname', 'wayfarer')
+				}
+			)
+			.finally(
+				() => {
+					pendingUpdates.push(formData);
+					totalUpdates++;
+					sendUpdate();
+				}
+			)
+	}
 
-		formData.append('nickname', 'wayfarer'); // fixme: get player
-
-		// if there's an error, let's retry 3 times. This is a custom property for us.
-		formData.retries = 3;
-
-		pendingUpdates.push(formData);
-		totalUpdates++;
-		sendUpdate();
+	let name;
+	function getName() {
+		return new Promise(
+			function(resolve, reject) {
+				if(name){
+					resolve(name);
+				}
+				
+				const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
+				fetch(url)
+					.then(
+						response  => {
+							response.json()
+								.then(
+									json => {
+										name = json.result.socialProfile.name;
+										logMessage(`Loaded name ${name}`);
+										resolve(name);
+									}
+								)
+						}								
+					)
+					.catch(
+						error => {
+							console.log('Catched fetch error', error);
+							logMessage(`Loading name failed. Using wayfarer`);
+							name = 'wayfarer';
+							resolve(name);
+						}
+					)
+			}
+		);
 	}
 
 	// Send updates one by one to avoid errors from Google
@@ -335,7 +382,7 @@ function init() {
 			})
 			.finally(() => {sendingUpdates--; sendUpdate();});
 	}
-
+	
 	function updateProgressLog() {
 		const count = pendingUpdates.length;
 
