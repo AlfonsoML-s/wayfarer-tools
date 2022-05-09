@@ -38,6 +38,11 @@
 			title: 'Potentials',
 			optionTitle: 'Potential'
 		},
+		held: {
+			color: 'yellow',
+			title: 'On hold',
+			optionTitle: 'On hold'
+		},
 		submitted: {
 			color: 'orange',
 			title: 'Submitted',
