@@ -38,6 +38,11 @@
 			title: 'Potentials',
 			optionTitle: 'Potential'
 		},
+		held: {
+			color: 'yellow',
+			title: 'On hold',
+			optionTitle: 'On hold'
+		},
 		submitted: {
 			color: 'orange',
 			title: 'Submitted',
@@ -52,6 +57,11 @@
 			color: 'red',
 			title: 'Rejected',
 			optionTitle: 'Rejected'
+		},
+		appealed: {
+			color: 'black',
+			title: 'Appealed',
+			optionTitle: 'Appealed'
 		},
 		potentialedit: {
 			color: 'cornflowerblue',

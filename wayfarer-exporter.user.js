@@ -150,7 +150,8 @@ function init() {
 			}
 			if (nomination.status == 'REJECTED') {
 				rejectCandidate(nomination, existingCandidate);
-				delete currentCandidates[id];
+				//can be appealed, so keeping
+				updateLocalCandidate(id, nomination); 
 				return true;
 			}
 			if (nomination.status == 'DUPLICATE') {
@@ -163,10 +164,22 @@ function init() {
 				delete currentCandidates[id];
 				return true;
 			}
+			if (nomination.status == 'APPEALED') {
+				updateLocalCandidate(id, nomination);	
+				appealCandidate(nomination, existingCandidate);
+				return true;
+			}			
+			//catches following changes: held -> nominated, nominated -> held, held -> nominated -> voting
+			if (statusConvertor(nomination.status) != existingCandidate.status){
+				updateLocalCandidate(id, nomination);				
+				updateCandidate(nomination, 'status');
+				return true;
+			}
+
 			return false;
 		}
 
-		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING') {
+		if (nomination.status == 'NOMINATED' || nomination.status == 'VOTING' || nomination.status == 'HELD' || nomination.status == 'APPEALED') {
 			/*
 			Try to find nominations added manually in IITC:
 			same name in the same level 17 cell
@@ -188,7 +201,7 @@ function init() {
 				title: nomination.title,
 				lat: nomination.lat,
 				lng: nomination.lng,
-				status: 'submitted'
+				status: statusConvertor(nomination.status)
 			};
 			return true;
 		}
@@ -209,10 +222,40 @@ function init() {
 		return R * c; // returns the distance in meter
 	}
 
+	function statusConvertor(status){		
+		if (status == 'HELD') {
+			return 'held';
+		}
+		if (status == 'NOMINATED' || status == 'VOTING') {
+			return 'submitted';
+		}
+		if (status == 'REJECTED' || status == 'DUPLICATE' || status == 'WITHDRAWN') {
+			return 'rejected';
+		}
+		if (status == 'APPEALED') {
+			return 'appealed';
+		}
+
+		return status;
+	}
+
+	function updateLocalCandidate(id, nomination){
+		currentCandidates[id].status = statusConvertor(nomination.status)
+		//needed only if changes in title and description are tracked and detected
+		currentCandidates[id].title = nomination.title
+		currentCandidates[id].description = nomination.description
+	}
+
 	function addCandidate(nomination) {
 		logMessage(`New candidate ${nomination.title}`);
 		console.log('Tracking new nomination', nomination);
-		updateStatus(nomination, 'submitted');
+		updateStatus(nomination, statusConvertor(nomination.status));
+	}
+
+	function updateCandidate(nomination, change) {
+		logMessage(`Updated candidate ${nomination.title} - changed ${change}`);
+		console.log('Updated existing nomination', nomination);
+		updateStatus(nomination, statusConvertor(nomination.status));
 	}
 
 	function deleteCandidate(nomination) {
@@ -227,6 +270,15 @@ function init() {
 		logMessage(`Rejected nomination ${nomination.title}`);
 		console.log('Rejected nomination', nomination);
 		updateStatus(nomination, 'rejected');
+	}
+
+	function appealCandidate(nomination, existingCandidate) {
+		if (existingCandidate.status == 'appealed')
+			return;
+
+		logMessage(`Appealed nomination ${nomination.title}`);
+		console.log('Appealed nomination', nomination);
+		updateStatus(nomination, statusConvertor(nomination.status));
 	}
 
 	function updateStatus(nomination, newStatus) {
@@ -417,7 +469,7 @@ function init() {
 			.then(function (response) {return response.text();})
 			.then(function (data) {return JSON.parse(data);})
 			.then(function (allData) {
-				const submitted = allData.filter(c => c.status == 'submitted' || c.status == 'potential' || c.status == 'rejected');
+				const submitted = allData.filter(c => c.status == 'submitted' || c.status == 'potential' || c.status == 'held' || c.status == 'rejected' || c.status == 'appealed');
 
 				const candidates = {};
 				submitted.forEach(c => {
