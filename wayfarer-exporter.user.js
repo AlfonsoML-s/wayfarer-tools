@@ -170,7 +170,7 @@ function init() {
 				return true;
 			}			
 			//catches following changes: held -> nominated, nominated -> held, held -> nominated -> voting
-			if (statusConvertor(nomination.status) != existingCandidate.status){
+			if (statusConvertor(nomination.status) != existingCandidate.status) {
 				updateLocalCandidate(id, nomination);				
 				updateCandidate(nomination, 'status');
 				return true;
@@ -231,7 +231,7 @@ function init() {
 		return R * c; // returns the distance in meter
 	}
 
-	function statusConvertor(status){		
+	function statusConvertor(status) {		
 		if (status == 'HELD') {
 			return 'held';
 		}
@@ -248,10 +248,10 @@ function init() {
 		return status;
 	}
 
-	function updateLocalCandidate(id, nomination){
-		currentCandidates[id].status = statusConvertor(nomination.status)
-		currentCandidates[id].title = nomination.title
-		currentCandidates[id].description = nomination.description
+	function updateLocalCandidate(id, nomination) {
+		currentCandidates[id].status = statusConvertor(nomination.status);
+		currentCandidates[id].title = nomination.title;
+		currentCandidates[id].description = nomination.description;
 	}
 
 	function addCandidate(nomination) {
@@ -305,13 +305,13 @@ function init() {
 		getName()
 			.then( 
 				name => {
-					formData.append('nickname', name)
+					formData.append('nickname', name);
 				} 
 			)
 			.catch( 
 				error => {
 					console.log('Catched load name error', error);
-					formData.append('nickname', 'wayfarer')
+					formData.append('nickname', 'wayfarer');
 				}
 			)
 			.finally(
@@ -320,20 +320,20 @@ function init() {
 					totalUpdates++;
 					sendUpdate();
 				}
-			)
+			);
 	}
 
 	let name;
 	let nameLoadingTriggered = false;
 	function getName() {
 		return new Promise(
-			function(resolve, reject) {
-				if (!nameLoadingTriggered){
+			function (resolve, reject) {
+				if (!nameLoadingTriggered) {
 					nameLoadingTriggered = true;
 					const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
 					fetch(url)
 						.then(
-							response  => {
+							response => {
 								response.json()
 									.then(
 										json => {
@@ -341,7 +341,7 @@ function init() {
 											logMessage(`Loaded name ${name}`);
 											resolve(name);
 										}
-									)
+									);
 							}								
 						)
 						.catch(
@@ -351,11 +351,10 @@ function init() {
 								name = 'wayfarer';
 								resolve(name);
 							}
-						)
-				}
-				else {
-					const loop = () => name !== undefined ? resolve(name) : setTimeout(loop, 2000)
-  					loop();
+						);
+				} else {
+					const loop = () => name !== undefined ? resolve(name) : setTimeout(loop, 2000);
+					loop();
 				}
 			}
 		);
