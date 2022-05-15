@@ -324,35 +324,39 @@ function init() {
 	}
 
 	let name;
+	let nameLoadingTriggered = false;
 	function getName() {
 		return new Promise(
 			function(resolve, reject) {
-				if(name){
-					resolve(name);
+				if (!nameLoadingTriggered){
+					nameLoadingTriggered = true;
+					const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
+					fetch(url)
+						.then(
+							response  => {
+								response.json()
+									.then(
+										json => {
+											name = json.result.socialProfile.name;
+											logMessage(`Loaded name ${name}`);
+											resolve(name);
+										}
+									)
+							}								
+						)
+						.catch(
+							error => {
+								console.log('Catched fetch error', error);
+								logMessage(`Loading name failed. Using wayfarer`);
+								name = 'wayfarer';
+								resolve(name);
+							}
+						)
 				}
-				
-				const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
-				fetch(url)
-					.then(
-						response  => {
-							response.json()
-								.then(
-									json => {
-										name = json.result.socialProfile.name;
-										logMessage(`Loaded name ${name}`);
-										resolve(name);
-									}
-								)
-						}								
-					)
-					.catch(
-						error => {
-							console.log('Catched fetch error', error);
-							logMessage(`Loading name failed. Using wayfarer`);
-							name = 'wayfarer';
-							resolve(name);
-						}
-					)
+				else {
+					const loop = () => name !== undefined ? resolve(name) : setTimeout(loop, 2000)
+  					loop();
+				}
 			}
 		);
 	}
