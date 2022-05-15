@@ -176,6 +176,14 @@ function init() {
 				return true;
 			}
 
+			//check for title and description updates only
+			if (nomination.title != existingCandidate.title || nomination.description != existingCandidate.description) {
+				currentCandidates[id].title = nomination.title;
+				currentCandidates[id].description = nomination.description;
+				updateCandidate(nomination, 'title or description');
+				return true;
+			}
+
 			return false;
 		}
 
@@ -199,6 +207,7 @@ function init() {
 			currentCandidates[nomination.id] = {
 				cell17id: S2.S2Cell.FromLatLng(nomination, 17).toString(),
 				title: nomination.title,
+				description: nomination.description,
 				lat: nomination.lat,
 				lng: nomination.lng,
 				status: statusConvertor(nomination.status)
@@ -241,7 +250,6 @@ function init() {
 
 	function updateLocalCandidate(id, nomination){
 		currentCandidates[id].status = statusConvertor(nomination.status)
-		//needed only if changes in title and description are tracked and detected
 		currentCandidates[id].title = nomination.title
 		currentCandidates[id].description = nomination.description
 	}
@@ -316,35 +324,39 @@ function init() {
 	}
 
 	let name;
+	let nameLoadingTriggered = false;
 	function getName() {
 		return new Promise(
 			function(resolve, reject) {
-				if(name){
-					resolve(name);
+				if (!nameLoadingTriggered){
+					nameLoadingTriggered = true;
+					const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
+					fetch(url)
+						.then(
+							response  => {
+								response.json()
+									.then(
+										json => {
+											name = json.result.socialProfile.name;
+											logMessage(`Loaded name ${name}`);
+											resolve(name);
+										}
+									)
+							}								
+						)
+						.catch(
+							error => {
+								console.log('Catched fetch error', error);
+								logMessage(`Loading name failed. Using wayfarer`);
+								name = 'wayfarer';
+								resolve(name);
+							}
+						)
 				}
-				
-				const url = 'https://wayfarer.nianticlabs.com/api/v1/vault/properties';
-				fetch(url)
-					.then(
-						response  => {
-							response.json()
-								.then(
-									json => {
-										name = json.result.socialProfile.name;
-										logMessage(`Loaded name ${name}`);
-										resolve(name);
-									}
-								)
-						}								
-					)
-					.catch(
-						error => {
-							console.log('Catched fetch error', error);
-							logMessage(`Loading name failed. Using wayfarer`);
-							name = 'wayfarer';
-							resolve(name);
-						}
-					)
+				else {
+					const loop = () => name !== undefined ? resolve(name) : setTimeout(loop, 2000)
+  					loop();
+				}
 			}
 		);
 	}
@@ -523,6 +535,7 @@ function init() {
 					candidates[c.id] = {
 						cell17id: S2.S2Cell.FromLatLng(c, 17).toString(),
 						title: c.title,
+						description: c.description,
 						lat: c.lat,
 						lng: c.lng,
 						status: c.status
