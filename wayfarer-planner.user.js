@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.14
+// @version      1.15
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -47,6 +47,11 @@
 			color: 'orange',
 			title: 'Submitted',
 			optionTitle: 'Submitted'
+		},
+		NIANTIC_REVIEW: {
+			color: 'pink',
+			title: 'Niantic Review',
+			optionTitle: 'Niantic Review'
 		},
 		live: {
 			color: 'green',
