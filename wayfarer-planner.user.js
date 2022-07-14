@@ -2,7 +2,7 @@
 // @id           wayfarer-planner@alfonsoml
 // @name         IITC plugin: Wayfarer Planner
 // @category     Layer
-// @version      1.15
+// @version      1.161
 // @namespace    https://gitlab.com/AlfonsoML/wayfarer/
 // @downloadURL  https://gitlab.com/AlfonsoML/wayfarer/raw/master/wayfarer-planner.user.js
 // @homepageURL  https://gitlab.com/AlfonsoML/wayfarer/
@@ -378,9 +378,9 @@
 		formpopup.setContent(formContent + '</div>');
 		formpopup.openOn(map);
 
-		if(editmarker != null) {
-			map.on('popupclose',function(e) {
-				if(e.popup === formpopup && !editmarker.preventClose) {
+		if (editmarker != null) {
+			map.on('popupclose',function (e) {
+				if (e.popup === formpopup && !editmarker.preventClose) {
 					map.removeLayer(editmarker);
 					editmarker = null;
 				}
@@ -469,7 +469,7 @@
 			 <p><input type="checkbox" id="chkShowTitles"><label for="chkShowTitles">Show titles</label></p>
 			 <p><input type="checkbox" id="chkShowRadius"><label for="chkShowRadius">Show submit radius</label></p>
 			 <p><input type="checkbox" id="chkShowInteractRadius"><label for="chkShowInteractRadius">Show interaction radius</label></p>
-			 <p><input type="checkbox" id="chkPlaceMarkers"><label for="chkPlaceMarkers">Click on the map to add markers</label></p>
+			 <p><input type="checkbox" id="chkPlaceMarkers"><label for="chkPlaceMarkers" title='Even if this option is unchecked, you can add markers by using Ctrl+Click'>Click on the map to add markers</label></p>
 			`;
 
 		const container = dialog({
@@ -646,9 +646,9 @@
 
 		$('body').on('submit','#submit-to-wayfarer', function (e) {
 			e.preventDefault();
-			editmarker.preventClose = true
+			editmarker.preventClose = true;
 			map.closePopup();
-			delete editmarker.preventClose
+			delete editmarker.preventClose;
 			$.ajax({
 				url: settings.scriptURL,
 				type: 'POST',
