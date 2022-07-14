@@ -295,11 +295,7 @@
 	}
 
 	function onMapClick(e) {
-		if (isPlacingMarkers) {
-			if (editmarker != null) {
-				map.removeLayer(editmarker);
-			}
-
+		if (isPlacingMarkers || e.originalEvent.ctrlKey) {
 			const marker = createGenericMarker(e.latlng, 'pink', {
 				title: 'Place your mark!'
 			});
@@ -382,6 +378,15 @@
 		formpopup.setContent(formContent + '</div>');
 		formpopup.openOn(map);
 
+		if(editmarker != null) {
+			map.on('popupclose',function(e) {
+				if(e.popup === formpopup && !editmarker.preventClose) {
+					map.removeLayer(editmarker);
+					editmarker = null;
+				}
+			});
+		}
+
 		const deleteLink = formpopup._contentNode.querySelector('#deletePortalCandidate');
 		if (deleteLink != null) {
 			deleteLink.addEventListener('click', e => confirmDeleteCandidate(e, id));
@@ -422,10 +427,6 @@
 
 	function markerClicked(event) {
 		// bind data to edit form
-		if (editmarker != null) {
-			map.removeLayer(editmarker);
-			editmarker = null;
-		}
 		drawInputPopop(event.layer.getLatLng(), event.layer.options.data);
 	}
 
@@ -549,8 +550,6 @@
 			isPlacingMarkers = chkPlaceMarkers.checked;
 			if (!isPlacingMarkers && editmarker != null) {
 				map.closePopup();
-				map.removeLayer(editmarker);
-				editmarker = null;
 			}
 			//settings.isPlacingMarkers = chkPlaceMarkers.checked;
 			//saveSettings();
@@ -647,7 +646,9 @@
 
 		$('body').on('submit','#submit-to-wayfarer', function (e) {
 			e.preventDefault();
+			editmarker.preventClose = true
 			map.closePopup();
+			delete editmarker.preventClose
 			$.ajax({
 				url: settings.scriptURL,
 				type: 'POST',
@@ -658,11 +659,11 @@
 					drawMarker(data);
 					if (editmarker != null) {
 						map.removeLayer(editmarker);
-						editmarker = null;
 					}
 				},
 				error: function (x, y, z) {
 					console.log('Wayfarer Planner. Error message: ', x, y, z); // eslint-disable-line no-console
+					map.removeLayer(editmarker);
 					alert('Wayfarer Planner. Failed to send data to the scriptURL.\r\nVerify that you\'re using the right URL and that you don\'t use any extension that blocks access to google.');
 				}
 			});
