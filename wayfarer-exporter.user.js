@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Wayfarer Exporter
-// @version      0.7
+// @version      0.8
 // @description  Export nominations data from Wayfarer to IITC in Wayfarer Planner
 // @namespace    https://github.com/AlfonsoML-s/wayfarer-tools/
-// @downloadURL  https://github.com/AlfonsoML-s/wayfarer-tools/raw/master/wayfarer-exporter.user.js
+// @downloadURL  https://gitlab.com/NvlblNm/wayfarer/raw/master/wayfarer-exporter.user.js
 // @homepageURL  https://alfonsoml-s.github.io/wayfarer-tools/
 // @match        https://wayfarer.nianticlabs.com/*
 // ==/UserScript==
