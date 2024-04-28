@@ -1,6 +1,6 @@
 ## NOTE
 
-This repository was initiated to have a (public) archive of AlfonsoML's tools. There was a fork on gitlab, but since AlfonsoML abondoned all work and set their repository to private mode, the forks also in private mode without the possibility to change this to public.
+This repository was initiated to have a (public) archive of AlfonsoML's tools. There was a fork on gitlab, but since AlfonsoML abondoned all work and set their repository to private mode, the forks are also in private mode without the possibility to change this to public.
 
 I merged the PR to fix the links and images, but I consider this repository still as an archive.
 
